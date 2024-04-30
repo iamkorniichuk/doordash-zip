@@ -50,9 +50,7 @@ To enable USB Debugging follow these [steps](https://www.asus.com/support/faq/10
 
 If your device location other than US, use **WIFI proxy** as described below:
 
-<video width="300" controls>
-    <source src="/proxy.mp4" type="video/mp4">
-</video>
+https://github.com/iamkorniichuk/doordash-zip/assets/119371190/00d8b2e7-d912-4cb9-82de-4bc7f5f3acb3
 
 Hostname: `us-px.oxylabs.io`
 Port: `10000`
