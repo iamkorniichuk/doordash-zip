@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Dict, Tuple
 
 from appium.webdriver.common.appiumby import AppiumBy as By
 from selenium.webdriver.support.ui import WebDriverWait as Wait
@@ -10,7 +10,7 @@ from appium.options.common.base import AppiumOptions
 
 
 class AndroidDevice:
-    def __init__(self, proxy: Tuple[str, str] = None):
+    def __init__(self, config: Dict, proxy: Tuple[str, str] = None):
         self.server = AppiumService()
 
         self.proxy = proxy
@@ -20,18 +20,16 @@ class AndroidDevice:
             "-pa",
             "/wd/hub",
         ]
-        self.driver_options = AppiumOptions().load_capabilities(
-            {
-                "platformName": "Android",
-                "automationName": "UiAutomator2",
-                "platformVersion": "11.0",
-                "deviceName": "MyAndroid30",
-                "app": "doordash-dasher.apk",
-                "language": "en",
-                "locale": "US",
-                "fullReset": True,
-            }
-        )
+        caps = {
+            "platformName": "Android",
+            "automationName": "UiAutomator2",
+            "app": "doordash-dasher.apk",
+            "language": "en",
+            "locale": "US",
+            "fullReset": True,
+        }
+        caps.update(config)
+        self.driver_options = AppiumOptions().load_capabilities(caps)
 
     def __enter__(self):
         self.server.start(args=self.server_args)
