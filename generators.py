@@ -79,9 +79,9 @@ def generate_password():
 
 def generate_birt_date():
     options = [
-        "02161980",
-        "08251975",
-        "10051986",
-        "11291990",
+        "02/16/1980",
+        "08/25/1975",
+        "10/05/1986",
+        "11/29/1990",
     ]
     return random.choice(options)
