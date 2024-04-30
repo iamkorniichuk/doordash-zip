@@ -44,7 +44,7 @@ def check_zip_code_availability(device, zip_code, wait):
     time.sleep(5)
     select_email(wait)
     time.sleep(5)
-    select_phone(wait)
+    select_phone(device, wait)
     time.sleep(30)
     select_personal_info(device, wait)
     time.sleep(5)
@@ -94,18 +94,33 @@ def select_email(wait):
     next.click()
 
 
-def select_phone(wait):
-    phone = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//android.widget.EditText"))
-    )
-    phone.send_keys(generate_phone())
-
-    sign_up = wait.until(
-        EC.element_to_be_clickable(
-            (By.XPATH, '//android.widget.Button[@text="Sign up"]')
+def select_phone(device, wait):
+    while True:
+        phone = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//android.widget.EditText"))
         )
-    )
-    sign_up.click()
+        phone.clear()
+        phone.send_keys(generate_phone())
+
+        sign_up = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, '//android.widget.Button[@text="Sign up"]')
+            )
+        )
+        sign_up.click()
+
+        time.sleep(10)
+        is_invalid = device.find_elements(
+            By.XPATH,
+            '//android.widget.TextView[@text="Your email didn\'t match your phone number"]',
+        )
+        if not is_invalid:
+            break
+        else:
+            back = device.find_element(
+                By.XPATH, '//android.widget.Button[@text="Go Back"]'
+            )
+            back.click()
 
 
 def select_personal_info(device, wait):
@@ -157,7 +172,7 @@ def select_car(device, wait):
     )
     car.click()
 
-    is_birth_flow = device.find_element(
+    is_birth_flow = device.find_elements(
         By.XPATH, '//android.view.View[@text="Date of Birth"]'
     )
     if is_birth_flow:
@@ -170,7 +185,7 @@ def birt_car_select_flow(wait):
     birth_date = wait.until(
         EC.element_to_be_clickable((By.XPATH, "//android.widget.EditText"))
     )
-    birth_date.send_keys()
+    birth_date.send_keys(generate_birt_date())
 
     next = wait.until(
         EC.element_to_be_clickable(
