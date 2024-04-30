@@ -33,12 +33,12 @@ def generate_email():
         "government",
         "health",
     ]
-    return f"{random.choice(adjectives)}_{random.choice(nouns)}@gmail.com"
+    return f"{random.choice(adjectives)}_{random.choice(nouns)}_{random.randint(0, 100)}@gmail.com"
 
 
 def generate_phone():
-    numbers = "".join([str(random.randint(1, 9)) for _ in range(7)])
-    return "312" + numbers
+    numbers = "".join([str(random.randint(1, 9)) for _ in range(6)])
+    return "3125" + numbers
 
 
 def generate_first_name():
@@ -75,3 +75,13 @@ def generate_last_name():
 def generate_password():
     symbols = string.ascii_letters + string.digits + string.punctuation
     return "".join([secrets.choice(symbols) for _ in range(10)])
+
+
+def generate_birt_date():
+    options = [
+        "02161980",
+        "08251975",
+        "10051986",
+        "11291990",
+    ]
+    return random.choice(options)

@@ -48,7 +48,7 @@ def check_zip_code_availability(device, zip_code, wait):
     time.sleep(30)
     select_personal_info(device, wait)
     time.sleep(5)
-    select_car(wait)
+    select_car(device, wait)
     time.sleep(5)
     return is_available(wait)
 
@@ -57,8 +57,10 @@ def select_city(zip_code, wait):
     postal_code = wait.until(
         EC.element_to_be_clickable((By.XPATH, "//android.widget.EditText"))
     )
+    postal_code.clear()
     postal_code.click()
 
+    time.sleep(2)
     zip_code = str(zip_code).rjust(5, "0")
     postal_code.send_keys(zip_code)
 
@@ -137,7 +139,7 @@ def select_personal_info(device, wait):
     next.click()
 
 
-def select_car(wait):
+def select_car(device, wait):
     vehicle_type = wait.until(
         EC.element_to_be_clickable(
             (By.XPATH, '(//android.view.View[@text="Vehicle Type"])[2]')
@@ -145,7 +147,6 @@ def select_car(wait):
     )
     vehicle_type.click()
 
-    # TODO: Different paths - one with birthday, other is default
     car = wait.until(
         EC.element_to_be_clickable(
             (
@@ -156,6 +157,30 @@ def select_car(wait):
     )
     car.click()
 
+    is_birth_flow = device.find_element(
+        By.XPATH, '//android.view.View[@text="Date of Birth"]'
+    )
+    if is_birth_flow:
+        birt_car_select_flow(wait)
+    else:
+        default_car_select_flow(wait)
+
+
+def birt_car_select_flow(wait):
+    birth_date = wait.until(
+        EC.element_to_be_clickable((By.XPATH, "//android.widget.EditText"))
+    )
+    birth_date.send_keys()
+
+    next = wait.until(
+        EC.element_to_be_clickable(
+            (By.XPATH, '//android.widget.Button[@text="Continue"]')
+        )
+    )
+    next.click()
+
+
+def default_car_select_flow(wait):
     make = wait.until(
         EC.element_to_be_clickable((By.XPATH, '(//android.view.View[@text="Make"])[2]'))
     )
@@ -221,13 +246,22 @@ def select_car(wait):
 def is_available(wait):
     try:
         wait.until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    '//android.widget.TextView[@text="Scan your driver\'s license"]',
-                )
+            EC.any_of(
+                EC.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        '//android.widget.TextView[@text="Scan your driver\'s license"]',
+                    )
+                ),
+                EC.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        '//android.widget.Button[@text="Download Android App"]',
+                    )
+                ),
             )
         )
+
         return True
     except TimeoutException:
         return False
