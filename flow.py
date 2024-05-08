@@ -20,7 +20,7 @@ def run_main_flow(device, cities, output_csv):
                 write_success_sign_up(
                     output_csv, obj["state"], obj["city"], obj["zip_code"]
                 )
-        except TimeoutException:
+        except:
             pass
         device.terminate_app("com.doordash.driverapp")
         subprocess.run(["adb", "shell", "pm", "clear", "com.doordash.driverapp"])
