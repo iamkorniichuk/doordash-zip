@@ -15,10 +15,13 @@ def run_main_flow(device, cities, output_csv):
     wait = Wait(device, 60)
 
     for obj in cities:
-        if check_zip_code_availability(device, obj["zip_code"], wait):
-            write_success_sign_up(
-                obj["state"], obj["city"], obj["zip_code"], output_csv
-            )
+        try:
+            if check_zip_code_availability(device, obj["zip_code"], wait):
+                write_success_sign_up(
+                    output_csv, obj["state"], obj["city"], obj["zip_code"]
+                )
+        except TimeoutException:
+            pass
         device.terminate_app("com.doordash.driverapp")
         subprocess.run(["adb", "shell", "pm", "clear", "com.doordash.driverapp"])
         device.activate_app("com.doordash.driverapp")
@@ -128,6 +131,7 @@ def select_personal_info(device, wait):
     first_name = edit_texts[0]
     first_name.send_keys(generate_first_name())
 
+    # 605
     no_middle_name = wait.until(
         EC.element_to_be_clickable(
             (By.XPATH, '//android.widget.CheckBox[@text="No middle name"]')
